@@ -19,6 +19,7 @@ app.all('/speech-api/v2/recognize', (req, res) => {
     path: pathname + req.url,
     method: req.method,
     headers: req.headers,
+	  changeOrigin: true,
   };
 
   // 根据请求是 HTTP 还是 HTTPS，使用相应的模块发送代理请求
