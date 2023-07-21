@@ -19,7 +19,7 @@ module.exports = (req, res) => {
      //   console.log("res from proxied server:", body);
      //   res.end(body);
     //});
-    proxyReq.on('response', function (res) {
+    proxyRes.on('response', function (res) {
       // if upgrade event isn't going to happen, close the socket
       if (!res.upgrade && socket.readyState === socket.OPEN) {
         socket.write(createHttpHeader('HTTP/' + res.httpVersion + ' ' + res.statusCode + ' ' + res.statusMessage, res.headers));
