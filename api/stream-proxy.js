@@ -9,13 +9,26 @@ module.exports = (req, res) => {
   // 设置请求头部
   req.headers['Host'] = new URL(targetUrl).host;
 
+  // 用于保存目标服务的响应数据
+  let responseData = '';
+
   // 监听目标服务的响应事件
   proxy.on('proxyRes', (proxyRes) => {
-    // 将目标服务的响应流返回给客户端的响应流
-    res.writeHead(proxyRes.statusCode, proxyRes.headers);
-    proxyRes.pipe(res);
+    // 当目标服务的响应到达时，将数据保存到 responseData 变量中
+    proxyRes.on('data', (chunk) => {
+      responseData += chunk;
+    });
+
+    // 在响应结束后，将 responseData 返回给客户端
+    proxyRes.on('end', () => {
+	   console.log('POST 请求结果:', responseData);
+      // 设置客户端的响应头部
+      res.writeHead(proxyRes.statusCode, proxyRes.headers);
+
+      // 返回响应数据给客户端
+      res.end(responseData);
+    });
   });
 
   // 将请求转发到目标服务
   proxy.web(req, res, { changeOrigin: true, target: targetUrl });
-};
