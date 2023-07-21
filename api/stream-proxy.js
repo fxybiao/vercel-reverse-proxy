@@ -17,5 +17,5 @@ const proxy = httpProxy.createProxyServer();
   });
 
   // 将请求转发到目标服务
-  proxy.web(req, res, { changeOrigin: true, target: targetUrl });
-};
+ proxy.web(req, res, { changeOrigin: true, target: targetUrl });
+
