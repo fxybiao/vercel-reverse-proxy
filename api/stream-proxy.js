@@ -17,7 +17,7 @@ module.exports = (req, res) => {
     proxyRes.on('end', function () {
         body = Buffer.concat(body).toString();
         console.log("res from proxied server:", body);
-        res.end("my response to cli");
+        //res.end("my response to cli");
     });
 });
 
