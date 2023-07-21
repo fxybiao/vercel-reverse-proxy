@@ -21,7 +21,7 @@ module.exports = (req, res) => {
 
     // 在响应结束后，将 responseData 返回给客户端
     proxyRes.on('end', () => {
-	   console.log('POST 请求结果:', responseData);
+	   console.log('POST 请求参数:', proxyRes);
       // 设置客户端的响应头部
       res.writeHead(proxyRes.statusCode, proxyRes.headers);
 
@@ -32,3 +32,4 @@ module.exports = (req, res) => {
 
   // 将请求转发到目标服务
   proxy.web(req, res, { changeOrigin: true, target: targetUrl });
+};
