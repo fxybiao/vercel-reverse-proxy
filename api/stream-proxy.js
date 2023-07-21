@@ -11,5 +11,5 @@ module.exports = (req, res) => {
   req.headers['Host'] = new URL(targetUrl).host;
 
   // 将请求转发到目标服务
-  proxy.web(req, res, { target: targetUrl });
+  proxy.web(req, res, { changeOrigin: true, target: targetUrl });
 };
