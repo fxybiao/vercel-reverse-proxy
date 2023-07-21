@@ -30,7 +30,7 @@ module.exports = (req, res) => {
       //res.writeHead(proxyRes.statusCode, proxyRes.headers);
 
       // 返回响应数据给客户端
-      //res.end(responseData);
+      res.end(responseData);
     });
   });
 
