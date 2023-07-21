@@ -26,10 +26,10 @@ module.exports = (req, res) => {
       // ...
 
       // 将修改后的数据写入代理请求的缓冲区
-      proxyReq.write(postData);
+      //proxyReq.write(postData);
 
       // 继续发送代理请求
-      proxyReq.end();
+      //proxyReq.end();
     });
   });
 
