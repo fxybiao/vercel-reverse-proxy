@@ -7,6 +7,8 @@ const { pipeline } = require('stream');
 const app = express();
 
 app.all('/speech-api/v2/recognize', (req, res) => {
+  delete req.headers.host;
+  delete req.headers.referer;	
   // 目标服务的 URL
   const targetUrl = 'https://www.google.com'; // 替换为目标服务的 URL
 
