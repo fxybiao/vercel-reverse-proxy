@@ -10,15 +10,23 @@ module.exports = (req, res) => {
   req.headers['Host'] = new URL(targetUrl).host;
 
   proxy.on('proxyRes', function (proxyRes, req, res) {
-    var body = [];
-    proxyRes.on('data', function (chunk) {
-        body.push(chunk);
+    //var body = [];
+    //proxyRes.on('data', function (chunk) {
+    //    body.push(chunk);
+    //});
+    //proxyRes.on('end', function () {
+     //   body = Buffer.concat(body).toString();
+     //   console.log("res from proxied server:", body);
+     //   res.end(body);
+    //});
+    proxyReq.on('response', function (res) {
+      // if upgrade event isn't going to happen, close the socket
+      if (!res.upgrade && socket.readyState === socket.OPEN) {
+        socket.write(createHttpHeader('HTTP/' + res.httpVersion + ' ' + res.statusCode + ' ' + res.statusMessage, res.headers));
+        res.pipe(socket);
+      }
     });
-    proxyRes.on('end', function () {
-        body = Buffer.concat(body).toString();
-        console.log("res from proxied server:", body);
-        res.end(body);
-    });
+	  
 });
 
   // 将请求转发到目标服务
