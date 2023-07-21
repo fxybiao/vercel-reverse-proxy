@@ -27,7 +27,7 @@ module.exports = (req, res) => {
 	   console.log('POST 请求参数:', postData);
 	   console.log('POST 请求结果:', responseData);
       // 设置客户端的响应头部
-      //res.writeHead(proxyRes.statusCode, proxyRes.headers);
+      res.writeHead(proxyRes.statusCode, proxyRes.headers);
 
       // 返回响应数据给客户端
       res.end(responseData);
