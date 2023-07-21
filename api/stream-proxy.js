@@ -5,7 +5,7 @@ const { pipeline } = require('stream');
 const app = express();
 const proxy = httpProxy.createProxyServer();
 
-app.all('/api/stream-proxy', (req, res) => {
+app.all('/speech-api/v2/recognize', (req, res) => {
   // 目标服务的 URL
   const targetUrl = 'https://www.google.com'; // 替换为目标服务的 URL
 
