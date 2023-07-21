@@ -1,37 +1,34 @@
-	const httpProxy = require('http-proxy');
+const express = require('express');
+const httpProxy = require('http-proxy');
+const { pipeline } = require('stream');
 
+const app = express();
 const proxy = httpProxy.createProxyServer();
 
-module.exports = (req, res) => {
+app.all('/api/stream-proxy', (req, res) => {
   // 目标服务的 URL
   const targetUrl = 'https://www.google.com'; // 替换为目标服务的 URL
 
   // 设置请求头部
   req.headers['Host'] = new URL(targetUrl).host;
 
-  proxy.on('proxyRes', function (proxyRes, req, res) {
-                   // modifyResponse(res, proxyRes, function (response) {
-                   //      console.log("----[proxyRes]---->", response)
-                   //      // modify response eventually
-                   //      return response; // return value can be a promise
-                   //  });
-	  
-	  
-    var body = [];
-   proxyRes.on('data', function (chunk) {
-        body.push(chunk);
+  // 将请求转发到目标服务
+  proxy.web(req, res, { target: targetUrl, selfHandleResponse: true });
+  
+  // 监听目标服务的响应事件
+  proxy.on('proxyRes', (proxyRes) => {
+    // 设置客户端的响应头部
+    res.writeHead(proxyRes.statusCode, proxyRes.headers);
+
+    // 使用 stream.pipeline() 将目标服务的响应数据传输给客户端
+    pipeline(proxyRes, res, (err) => {
+      if (err) {
+        console.error('Pipeline Error:', err);
+        res.end(); // 确保响应终止
+      }
     });
-	  
-    proxyRes.on('end', function () {
-        body = Buffer.concat(body).toString();
-        console.log("res from proxied server:", body);
-        res.end(body);
-	  
-     });
-	  
-	  
+  });
 });
 
-  // 将请求转发到目标服务
-  proxy.web(req, res, { selfHandleResponse : true, changeOrigin: true, target: targetUrl });
-};
+// 在 Vercel 上使用 Express.js 处理自定义 API
+module.exports = app;
