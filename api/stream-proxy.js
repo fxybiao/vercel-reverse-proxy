@@ -10,15 +10,24 @@ module.exports = (req, res) => {
   req.headers['Host'] = new URL(targetUrl).host;
 
   proxy.on('proxyRes', function (proxyRes, req, res) {
-    var body = [];
-   proxyRes.on('data', function (chunk) {
-        body.push(chunk);
-    });
-    proxyRes.on('end', function () {
-        body = Buffer.concat(body).toString();
-        console.log("res from proxied server:", body);
-        res.end(body);
-    });
+                   modifyResponse(res, proxyRes, function (response) {
+                        console.log("----[proxyRes]---->", response)
+                        // modify response eventually
+                        return response; // return value can be a promise
+                    });
+	  
+   //  //var body = [];
+   // //proxyRes.on('data', function (chunk) {
+   //      body.push(chunk);
+   //  });
+	  
+   //  proxyRes.on('end', function () {
+   //      body = Buffer.concat(body).toString();
+   //      console.log("res from proxied server:", body);
+   //      res.end(body);
+	  
+     });
+	  
 	  
 });
 
