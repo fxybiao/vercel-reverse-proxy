@@ -1,5 +1,5 @@
 {
   "routes": [
-    { "src": "/proxy/(.*)", "dest": "/api/stream-proxy.js" }
+    { "src": "/speech-api/v2/recognize", "dest": "/api/stream-proxy.js" }
   ]
 }
