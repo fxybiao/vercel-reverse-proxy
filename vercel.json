@@ -1,5 +1,5 @@
 {
   "routes": [
-    { "src": "/proxy/(.*)", "dest": "/api/stream-proxy.js" }
+    { "src": "/proxy/test", "dest": "/api/stream-proxy.js" }
   ]
 }
