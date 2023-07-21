@@ -26,7 +26,7 @@ module.exports = (req, res) => {
    //      console.log("res from proxied server:", body);
    //      res.end(body);
 	  
-     });
+     //});
 	  
 	  
 });
