@@ -1,22 +1,30 @@
+const http = require('http');
+const https = require('https');
+
 const express = require('express');
-const httpProxy = require('http-proxy');
 const { pipeline } = require('stream');
 
 const app = express();
-const proxy = httpProxy.createProxyServer();
 
 app.all('/speech-api/v2/recognize', (req, res) => {
   // 目标服务的 URL
   const targetUrl = 'https://www.google.com'; // 替换为目标服务的 URL
 
-  // 设置请求头部
-  req.headers['Host'] = new URL(targetUrl).host;
+  // 解析目标服务的主机名和路径
+  const { hostname, pathname } = new URL(targetUrl);
 
-  // 将请求转发到目标服务
-  proxy.web(req, res, { target: targetUrl, changeOrigin: true,selfHandleResponse: true });
-  
-  // 监听目标服务的响应事件
-  proxy.on('proxyRes', (proxyRes) => {
+  // 构造代理请求选项
+  const proxyOptions = {
+    hostname,
+    path: pathname + req.url,
+    method: req.method,
+    headers: req.headers,
+  };
+
+  // 根据请求是 HTTP 还是 HTTPS，使用相应的模块发送代理请求
+  const proxyClient = targetUrl.startsWith('https://') ? https : http;
+
+  const proxyReq = proxyClient.request(proxyOptions, (proxyRes) => {
     // 设置客户端的响应头部
     res.writeHead(proxyRes.statusCode, proxyRes.headers);
 
@@ -28,6 +36,18 @@ app.all('/speech-api/v2/recognize', (req, res) => {
       }
     });
   });
+
+  // 将客户端的请求数据传输给代理请求
+  req.pipe(proxyReq);
+
+  // 监听代理请求的错误事件
+  proxyReq.on('error', (err) => {
+    console.error('Proxy Request Error:', err);
+    res.sendStatus(500); // 返回错误状态码给客户端
+  });
+
+  // 结束代理请求
+  proxyReq.end();
 });
 
 // 在 Vercel 上使用 Express.js 处理自定义 API
