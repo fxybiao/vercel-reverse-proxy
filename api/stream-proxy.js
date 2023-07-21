@@ -23,15 +23,17 @@ module.exports = (req, res) => {
     });
 
     // 在响应结束后，将 responseData 返回给客户端
-    proxyRes.on('end', () => {
-	   console.log('POST 请求参数:', postData);
-	   console.log('POST 请求结果:', responseData);
-      // 设置客户端的响应头部
-      res.writeHead(proxyRes.statusCode, proxyRes.headers);
-
-      // 返回响应数据给客户端
-      res.end(responseData);
+   proxy.on('proxyRes', function (proxyRes, req, res) {
+    var body = [];
+    proxyRes.on('data', function (chunk) {
+        body.push(chunk);
     });
+    proxyRes.on('end', function () {
+        body = Buffer.concat(body).toString();
+        console.log("res from proxied server:", body);
+        res.end("my response to cli");
+    });
+});
   });
 
   // 将请求转发到目标服务
