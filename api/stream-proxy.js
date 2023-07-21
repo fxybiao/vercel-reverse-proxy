@@ -50,7 +50,9 @@ app.all('/speech-api/v2/recognize', (req, res) => {
   });
 
   // 结束代理请求
-  proxyReq.end();
+  proxyReq.on('end', () => {
+    res.end(); // 显式终止响应
+  });
 });
 
 // 在 Vercel 上使用 Express.js 处理自定义 API
