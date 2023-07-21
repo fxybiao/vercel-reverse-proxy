@@ -23,10 +23,10 @@ module.exports = (req, res) => {
     proxyRes.on('end', () => {
 	   console.log('POST 请求参数:', proxyRes);
       // 设置客户端的响应头部
-      res.writeHead(proxyRes.statusCode, proxyRes.headers);
+      //res.writeHead(proxyRes.statusCode, proxyRes.headers);
 
       // 返回响应数据给客户端
-      res.end(responseData);
+      //res.end(responseData);
     });
   });
 
