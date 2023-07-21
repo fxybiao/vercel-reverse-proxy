@@ -13,7 +13,7 @@ app.all('/speech-api/v2/recognize', (req, res) => {
   req.headers['Host'] = new URL(targetUrl).host;
 
   // 将请求转发到目标服务
-  proxy.web(req, res, { target: targetUrl, selfHandleResponse: true });
+  proxy.web(req, res, { target: targetUrl, changeOrigin: true,selfHandleResponse: true });
   
   // 监听目标服务的响应事件
   proxy.on('proxyRes', (proxyRes) => {
